@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -29,7 +30,7 @@ public class WebSecurityConfig {
                 .httpBasic((httpBasicConfig) -> httpBasicConfig.disable()) // token을 사용하므로 basic 인증 disable
                 .sessionManagement((sessionManagementConfig)
                         -> sessionManagementConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // session 기반이 아님을 선언
-                .authorizeRequests((authorizeRequests)
+                .authorizeHttpRequests((authorizeRequests)
                         -> authorizeRequests.requestMatchers(new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/auth/**")).permitAll() // "/"와 "/auth/**" 경로는 인증 안 해도 됨
                         .anyRequest().authenticated()) // "/"와 "/auth/**" 경로 외에는 인증 필요
         ;
@@ -37,9 +38,9 @@ public class WebSecurityConfig {
         // filter 등록
         // 매 요청마다 CorsFilter 실행한 후에
         // jwtAuthenticationFilter 실행
-        http.addFilterBefore(
+        http.addFilterAfter(
                 jwtAuthenticationFilter,
-                UsernamePasswordAuthenticationFilter.class
+                CorsFilter.class
         );
 
         return http.build();
