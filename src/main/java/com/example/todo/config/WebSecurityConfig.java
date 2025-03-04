@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -26,8 +27,8 @@ public class WebSecurityConfig {
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // http 시큐리티 빌더
         http
-                .csrf((csrfConfig) -> csrfConfig.disable()) // csrf 사용하지 않으므로 disable
-                .httpBasic((httpBasicConfig) -> httpBasicConfig.disable()) // token을 사용하므로 basic 인증 disable
+                .csrf(AbstractHttpConfigurer::disable) // csrf 사용하지 않으므로 disable
+                .httpBasic(AbstractHttpConfigurer::disable) // token을 사용하므로 basic 인증 disable
                 .sessionManagement((sessionManagementConfig)
                         -> sessionManagementConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // session 기반이 아님을 선언
                 .authorizeHttpRequests((authorizeRequests)
